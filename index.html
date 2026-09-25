@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-ONE // Secure Login</title>
+    <style>
+        :root {
+            --bg-color: #050b14;
+            --panel-bg: #0a1424;
+            --accent: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.4);
+            --text-main: #e0f2fe;
+            --text-dim: #94a3b8;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .login-box, .dashboard {
+            background: var(--panel-bg);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            text-align: center;
+        }
+        .dashboard {
+            max-width: 800px;
+            display: none;
+            text-align: left;
+        }
+        input {
+            width: 90%;
+            background: #0f172a;
+            border: 1px solid var(--accent);
+            color: white;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            border-radius: 4px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        @media(min-width: 768px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+        .card {
+            background: #08101d;
+            border: 1px solid #1e293b;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .card h3 { color: var(--accent); margin-top: 0; }
+        .card p { color: var(--text-dim); font-size: 0.85rem; }
+        .download-btn {
+            display: block;
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div class="login-box" id="loginScreen">
+        <h2 style="color: var(--accent); letter-spacing: 2px;">S-ONE SECURITY</h2>
+        <p style="color: var(--text-dim); font-size: 0.85rem;">Shoaib's Optimized Neural Engine</p>
+        <input type="text" id="username" placeholder="User ID">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn" onclick="checkLogin()">LOGIN</button>
+        <p id="errorMsg" style="color: #ff4d4d; font-size: 0.8rem; margin-top: 10px;"></p>
+    </div>
+
+    <!-- S-One Dashboard (Hidden until login) -->
+    <div class="dashboard" id="dashboardScreen">
+        <h2 style="color: var(--accent); letter-spacing: 2px; text-align: center; margin-top: 0;">S-ONE COMMAND HUB</h2>
+        <p style="color: var(--text-dim); text-align: center; font-size: 0.85rem; margin-top: -10px;">Shoaib's Optimized Neural Engine // Secure Link Active</p>
+        <hr style="border-color: #1e293b;">
+        
+        <div class="grid">
+            <!-- Mobile Download -->
+            <div class="card">
+                <h3>OPPO A31 (MOBILE)</h3>
+                <p>Lightweight mobile client package configured for Android.</p>
+                <a href="#" class="download-btn" onclick="alert('Downloading S-One Mobile APK...'); return false;">DOWNLOAD APK</a>
+            </div>
+
+            <!-- Tablet Download -->
+            <div class="card">
+                <h3>TABLET TERMINAL</h3>
+                <p>Widescreen HUD interface layout for tablets.</p>
+                <a href="#" class="download-btn" onclick="alert('Downloading S-One Tablet Client...'); return false;">DOWNLOAD APK</a>
+            </div>
+
+            <!-- Laptop Download -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h3>LAPTOP COMMAND CENTER</h3>
+                <p>Main Python neural engine package and background automation scripts.</p>
+                <a href="#" class="download-btn" onclick="alert('Downloading S-One Laptop Suite...'); return false;">DOWNLOAD CORE SUITE</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            
+            if(user === 'admin' && pass === 'sone123') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboardScreen').style.display = 'block';
+            } else {
+                document.getElementById('errorMsg').innerText = 'Access Denied: Incorrect ID or Password';
+            }
+        }
+    </script>
+</body>
+  </html>
+  
