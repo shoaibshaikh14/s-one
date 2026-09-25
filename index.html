@@ -316,7 +316,6 @@
             localStorage.setItem(`status_${user}`, 'waiting');
             localStorage.setItem(`dev_${user}`, dev);
 
-            // Force add to pending queue
             let pending = [];
             try {
                 pending = JSON.parse(localStorage.getItem('queue_pending')) || [];
@@ -496,4 +495,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+    
