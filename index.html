@@ -169,7 +169,7 @@
 
         .reset-link {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 12px;
             font-size: 10px;
             color: var(--dim);
             cursor: pointer;
@@ -184,8 +184,12 @@
     </div>
 
     <script>
-        // EmailJS initialization
-        try { emailjs.init("YOUR_PUBLIC_KEY"); } catch(e) {}
+        // Initialize EmailJS with your real Public Key
+        try { 
+            emailjs.init("a6TAFnxtb-tQybqOo"); //[span_0](start_span)[span_0](end_span)
+        } catch(e) {
+            console.log("EmailJS init failed");
+        }
 
         // Device Detector
         function getDevice() {
@@ -226,7 +230,8 @@
                     <input type="password" id="pwd" placeholder="Enter Password">
                 </div>
                 <button class="btn" onclick="verifyLogin()">Establish Link</button>
-                <div class="reset-link" onclick="systemHardReset()">[ Force System Reset ]</div>
+                <div class="reset-link" onclick="triggerForgotPassword()">[ Forgot Password via Gmail ]</div>
+                <div class="reset-link" onclick="systemHardReset()" style="color:var(--red);">[ Force System Reset ]</div>
             `;
         }
 
@@ -257,6 +262,26 @@
                     localStorage.setItem(`status_${u}`, 'idle');
                 }
                 loadGuestPortal('dashboard');
+            }
+        }
+
+        // Forgot Password via Gmail Logic
+        function triggerForgotPassword() {
+            const adminUser = localStorage.getItem('cfg_admin_usr') || 'admin';
+            const adminPass = localStorage.getItem('cfg_admin_pwd') || 'sone123';
+            const targetEmail = "shoaibshaikh14062008@gmail.com"; //[span_1](start_span)[span_1](end_span)
+
+            if(confirm(`Send recovery credentials to registered admin email (${targetEmail})?`)) {
+                emailjs.send("shoaib1406", "template_mrkffeo", { //[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
+                    name: "Admin Recovery", //[span_4](start_span)[span_4](end_span)
+                    email: targetEmail, //[span_5](start_span)[span_5](end_span)
+                    title: "S-ONE Password Recovery", //[span_6](start_span)[span_6](end_span)
+                    message: `SECURITY ALERT: Your Admin Username is '${adminUser}' and current Neural Passcode is '${adminPass}'.` //[span_7](start_span)[span_7](end_span)
+                }).then(function(response) {
+                    alert("Recovery instructions dispatched to your Gmail inbox!");
+                }, function(error) {
+                    alert("Failed to send email. Check connection.");
+                });
             }
         }
 
@@ -310,15 +335,14 @@
                 localStorage.setItem('queue_pending', JSON.stringify(pending));
             }
 
-            try {
-                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-                    user_name: user,
-                    device_info: dev,
-                    message: `Request from ${user} using ${dev}`
-                });
-            } catch(e) {}
+            emailjs.send("shoaib1406", "template_mrkffeo", { //[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+                name: user, //[span_10](start_span)[span_10](end_span)
+                email: "shoaibshaikh14062008@gmail.com", //[span_11](start_span)[span_11](end_span)
+                title: "New S-ONE Access Request", //[span_12](start_span)[span_12](end_span)
+                message: `Operative ID: ${user} | Device: ${dev}` //[span_13](start_span)[span_13](end_span)
+            });
 
-            alert("Request transmitted successfully.");
+            alert("Request transmitted to Ultron Core & Email dispatched.");
             loadGuestPortal('dashboard');
         }
 
