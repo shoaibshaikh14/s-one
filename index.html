@@ -3,152 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S-ONE // Secure Login</title>
+    <title>S-ONE // Jarvis Neural Command Hub</title>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("a6TAFnxtb-tQybqOo");
+        })();
+    </script>
     <style>
         :root {
-            --bg-color: #050b14;
-            --panel-bg: #0a1424;
-            --accent: #00f0ff;
-            --accent-glow: rgba(0, 240, 255, 0.4);
-            --text-main: #e0f2fe;
-            --text-dim: #94a3b8;
+            --bg-color: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --accent-cyan: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.2);
+            --accent-red: #ff3366;
+            --accent-green: #00ff66;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 240, 255, 0.2);
         }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
+        body { 
+            background-color: var(--bg-color); 
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+                linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
         }
-        .login-box, .dashboard {
-            background: var(--panel-bg);
-            border: 1px solid var(--accent);
-            border-radius: 8px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-            text-align: center;
+        .container { 
+            width: 100%; 
+            max-width: 520px; 
+            background: var(--card-bg); 
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 30px; 
+            box-shadow: 0 0 30px var(--accent-glow), inset 0 0 15px rgba(0, 240, 255, 0.05); 
+            position: relative;
+            overflow: hidden;
         }
-        .dashboard {
-            max-width: 800px;
-            display: none;
-            text-align: left;
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            animation: scanline 3s linear infinite;
         }
-        input {
-            width: 90%;
-            background: #0f172a;
-            border: 1px solid var(--accent);
-            color: white;
-            padding: 10px;
-            margin: 10px 0;
-            font-family: monospace;
-            border-radius: 4px;
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
-        .btn {
-            display: block;
-            width: 100%;
-            background: var(--accent);
-            color: black;
-            border: none;
-            padding: 12px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        @media(min-width: 768px) {
-            .grid { grid-template-columns: 1fr 1fr; }
-        }
-        .card {
-            background: #08101d;
-            border: 1px solid #1e293b;
-            padding: 15px;
-            border-radius: 6px;
-        }
-        .card h3 { color: var(--accent); margin-top: 0; }
-        .card p { color: var(--text-dim); font-size: 0.85rem; }
-        .download-btn {
-            display: block;
-            background: transparent;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 8px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
+        h1 { color: var(--accent-cyan); font-size: 1.6rem; text-align: center; margin-bottom: 5px; letter-spacing: 3px; text-shadow: 0 0 10px var(--accent-glow); }
+        .subtitle { color: var(--text-muted); font-size: 0.75rem; text-align: center; margin-bottom: 25px; letter-spacing: 1px; text-transform: uppercase; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 0.8rem; color: var(--accent-cyan); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px 15px; background: rgba(3, 7, 18, 0.8); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; font-size: 1rem; transition: 0.3s; }
+        input:focus, select:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 15px var(--accent-glow); }
+        button { width: 100%; padding: 14px; background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        button:hover { background: var(--accent-cyan); color: var(--bg-color); box-shadow: 0 0 20px var(--accent-cyan); }
+        .btn-danger { border-color: var(--accent-red); color: var(--accent-red); background: rgba(255, 51, 102, 0.1); }
+        .btn-danger:hover { background: var(--accent-red); color: var(--bg-color); box-shadow: 0 0 20px var(--accent-red); }
+        .btn-success { border-color: var(--accent-green); color: var(--accent-green); background: rgba(0, 255, 102, 0.1); }
+        .btn-success:hover { background: var(--accent-green); color: var(--bg-color); box-shadow: 0 0 20px var(--accent-green); }
+        .hidden { display: none !important; }
+        .status-box { padding: 15px; border-radius: 6px; margin-top: 15px; text-align: center; font-size: 0.85rem; line-height: 1.4; }
+        .pending-box { background: rgba(255, 165, 0, 0.1); border: 1px solid orange; color: #ffb703; }
+        .rejected-box { background: rgba(255, 51, 102, 0.1); border: 1px solid var(--accent-red); color: var(--accent-red); }
+        .device-card { background: rgba(3, 7, 18, 0.6); border: 1px solid var(--border-color); padding: 12px; margin-bottom: 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .device-info font { font-size: 0.7rem; color: var(--text-muted); }
+        .log-out-btn { background: none; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 6px 12px; font-size: 0.75rem; width: auto; margin: 0; }
+        .jarvis-status { font-size: 0.7rem; text-align: center; color: var(--accent-cyan); margin-top: 15px; opacity: 0.8; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <!-- Login Screen -->
-    <div class="login-box" id="loginScreen">
-        <h2 style="color: var(--accent); letter-spacing: 2px;">S-ONE SECURITY</h2>
-        <p style="color: var(--text-dim); font-size: 0.85rem;">Shoaib's Optimized Neural Engine</p>
-        <input type="text" id="username" placeholder="User ID">
-        <input type="password" id="password" placeholder="Password">
-        <button class="btn" onclick="checkLogin()">LOGIN</button>
-        <p id="errorMsg" style="color: #ff4d4d; font-size: 0.8rem; margin-top: 10px;"></p>
+    <!-- AUTH CONTAINER -->
+    <div class="container" id="auth-container">
+        <h1>S-ONE // JARVIS</h1>
+        <div class="subtitle">Secure Neural Gateway & Gmail Dispatch</div>
+        
+        <div class="form-group">
+            <label>Security Clearance / Role</label>
+            <select id="login-role" onchange="toggleRoleFields()">
+                <option value="guest">Guest Operative (Universal Access)</option>
+                <option value="admin">Jarvis Core Admin (`admin`)</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="username-group">
+            <label>Operative ID</label>
+            <input type="text" id="username" placeholder="Enter identifier...">
+        </div>
+
+        <div class="form-group">
+            <label>Neural Passkey / Code</label>
+            <input type="password" id="password" placeholder="Enter passkey...">
+        </div>
+
+        <button onclick="handleLogin()">Initiate Protocol</button>
+        <div class="jarvis-status">JARVIS CORE: ONLINE & SECURE</div>
     </div>
 
-    <!-- S-One Dashboard (Hidden until login) -->
-    <div class="dashboard" id="dashboardScreen">
-        <h2 style="color: var(--accent); letter-spacing: 2px; text-align: center; margin-top: 0;">S-ONE COMMAND HUB</h2>
-        <p style="color: var(--text-dim); text-align: center; font-size: 0.85rem; margin-top: -10px;">Shoaib's Optimized Neural Engine // Secure Link Active</p>
-        <hr style="border-color: #1e293b;">
-        
-        <div class="grid">
-            <!-- Mobile Download -->
-            <div class="card">
-                <h3>OPPO A31 (MOBILE)</h3>
-                <p>Lightweight mobile client package configured for Android.</p>
-                <a href="#" class="download-btn" onclick="alert('Downloading S-One Mobile APK...'); return false;">DOWNLOAD APK</a>
-            </div>
-
-            <!-- Tablet Download -->
-            <div class="card">
-                <h3>TABLET TERMINAL</h3>
-                <p>Widescreen HUD interface layout for tablets.</p>
-                <a href="#" class="download-btn" onclick="alert('Downloading S-One Tablet Client...'); return false;">DOWNLOAD APK</a>
-            </div>
-
-            <!-- Laptop Download -->
-            <div class="card" style="grid-column: 1 / -1;">
-                <h3>LAPTOP COMMAND CENTER</h3>
-                <p>Main Python neural engine package and background automation scripts.</p>
-                <a href="#" class="download-btn" onclick="alert('Downloading S-One Laptop Suite...'); return false;">DOWNLOAD CORE SUITE</a>
-            </div>
+    <!-- GUEST WAITING SCREEN -->
+    <div class="container hidden" id="guest-waiting-container">
+        <h1>ACCESS PENDING</h1>
+        <div class="subtitle">Neural Gateway Monitor</div>
+        <div id="guest-status-message" class="status-box pending-box">
+            Authorization request dispatched to Admin Gmail. Awaiting secure clearance...
         </div>
+        <button class="log-out-btn" style="width:100%; margin-top:20px;" onclick="logout()">Abort & Return</button>
+    </div>
+
+    <!-- GUEST APPROVED DASHBOARD -->
+    <div class="container hidden" id="guest-dashboard">
+        <h1>S-ONE TERMINAL</h1>
+        <div class="subtitle">Universal Node // Clearance Granted</div>
+        <div class="status-box" style="border: 1px solid var(--accent-green); color: var(--accent-green); background: rgba(0,255,102,0.05);">
+            Neural link established successfully via Gmail verification.
+        </div>
+        <button onclick="alert('Downloading S-ONE Secure Package...');">Download Secure Package</button>
+        <button class="btn-danger" style="margin-top: 15px;" onclick="logout()">Terminate Session</button>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div class="container hidden" id="admin-dashboard">
+        <h1>JARVIS COMMAND</h1>
+        <div class="subtitle">Central Gmail Request Manager</div>
+        
+        <h3 style="color:var(--accent-cyan); font-size:0.9rem; margin: 15px 0 10px 0; letter-spacing:1px;">Pending Access Requests</h3>
+        <div id="pending-requests-list">
+            <p style="color:var(--text-muted); font-size:0.8rem;">No pending security requests.</p>
+        </div>
+
+        <h3 style="color:var(--accent-cyan); font-size:0.9rem; margin: 20px 0 10px 0; letter-spacing:1px;">Active Neural Links (Kill Switch)</h3>
+        <div id="active-devices-list">
+            <p style="color:var(--text-muted); font-size:0.8rem;">No active nodes connected.</p>
+        </div>
+
+        <button class="btn-danger" style="margin-top:20px;" onclick="logout()">Disconnect Jarvis Core</button>
     </div>
 
     <script>
-        function checkLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            
-            if(user === 'admin' && pass === 'sone123') {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').style.display = 'block';
+        function getDeviceInfo() {
+            const ua = navigator.userAgent;
+            if (/android/i.test(ua)) return "Android Neural Node";
+            if (/iphone|ipad|ipod/i.test(ua)) return "iOS Secure Client";
+            if (/win/i.test(ua)) return "Windows Workstation";
+            if (/mac/i.test(ua)) return "Macintosh Node";
+            return "Universal Web Client";
+        }
+
+        function toggleRoleFields() {
+            const role = document.getElementById('login-role').value;
+            const userGroup = document.getElementById('username-group');
+            if (role === 'admin') {
+                userGroup.classList.remove('hidden');
             } else {
-                document.getElementById('errorMsg').innerText = 'Access Denied: Incorrect ID or Password';
+                userGroup.classList.add('hidden');
             }
         }
+
+        function handleLogin() {
+            const role = document.getElementById('login-role').value;
+            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value.trim();
+            const deviceName = getDeviceInfo();
+            const clientId = 'client_' + Math.random().toString(36).substring(2, 9);
+
+            if (role === 'admin') {
+                if (username === 'admin' && password === 'sone123') {
+                    localStorage.setItem('s_one_session', JSON.stringify({ role: 'admin' }));
+                    loadDashboard();
+                } else {
+                    alert('Access Denied: Invalid Jarvis Admin Credentials!');
+                }
+            } else {
+                const guestName = username !== '' ? username : ('Operative-' + Math.floor(Math.random()*1000));
+                
+                const currentUrl = window.location.href.split('?')[0];
+                const approveLink = `${currentUrl}?action=approve&id=${clientId}`;
+                const rejectLink = `${currentUrl}?action=reject&id=${clientId}`;
+
+                const requestData = { id: clientId, name: guestName, device: deviceName, status: 'pending' };
+                let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+                requests.push(requestData);
+                localStorage.setItem('s_one_requests', JSON.stringify(requests));
+                localStorage.setItem('s_one_session', JSON.stringify({ role: 'guest', id: clientId, name: guestName }));
+
+                const templateParams = {
+                    guest_name: guestName,
+                    device_info: deviceName,
+                    approve_link: approveLink,
+                    reject_link: rejectLink,
+                    name: guestName,
+                    message: `Jarvis Alert - New Access Request\nDevice: ${deviceName}\nApprove: ${approveLink}\nReject: ${rejectLink}`
+                };
+
+                emailjs.send('shoaib1406', 'template_mrkffeo', templateParams)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                    }, function(error) {
+                        console.log('FAILED...', error);
+                    });
+
+                loadDashboard();
+            }
+        }
+
+        function checkUrlActions() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            const id = urlParams.get('id');
+
+            if (action && id) {
+                let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+                if (action === 'approve') {
+                    requests = requests.map(r => r.id === id ? { ...r, status: 'approved' } : r);
+                    alert('Node ' + id + ' Approved via Gmail Link!');
+                } else if (action === 'reject') {
+                    requests = requests.map(r => r.id === id ? { ...r, status: 'rejected' } : r);
+                    alert('Node ' + id + ' Access Rejected.');
+                }
+                localStorage.setItem('s_one_requests', JSON.stringify(requests));
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        function checkRemoteStatus() {
+            const session = JSON.parse(localStorage.getItem('s_one_session'));
+            if (!session) return;
+
+            if (session.role === 'guest') {
+                let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+                let myReq = requests.find(r => r.id === session.id);
+                
+                if (!myReq) {
+                    alert('Your session has been terminated by Jarvis Admin.');
+                    logout();
+                    return;
+                }
+
+                if (myReq.status === 'approved') {
+                    document.getElementById('guest-waiting-container').classList.add('hidden');
+                    document.getElementById('guest-dashboard').classList.remove('hidden');
+                } else if (myReq.status === 'rejected') {
+                    document.getElementById('guest-waiting-container').innerHTML = `
+                        <h1>ACCESS REVOKED</h1>
+                        <div class="subtitle">Neural Gateway Monitor</div>
+                        <div class="status-box rejected-box">Jarvis Admin denied your clearance request.</div>
+                        <button class="log-out-btn" style="width:100%; margin-top:20px;" onclick="logout()">Return to Login</button>
+                    `;
+                }
+            } else if (session.role === 'admin') {
+                renderAdminPanel();
+            }
+        }
+
+        function renderAdminPanel() {
+            let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+            let pendingListHTML = '';
+            let pendingReqs = requests.filter(r => r.status === 'pending');
+            
+            if (pendingReqs.length === 0) {
+                pendingListHTML = '<p style="color:var(--text-muted); font-size:0.8rem;">No pending security requests.</p>';
+            } else {
+                pendingReqs.forEach(req => {
+                    pendingListHTML += `
+                        <div class="device-card">
+                            <div>
+                                <strong style="color:var(--text-main);">${req.name}</strong><br>
+                                <font>${req.device}</font>
+                            </div>
+                            <div>
+                                <button class="btn-success" style="padding:6px 10px; font-size:0.7rem; width:auto; margin:0;" onclick="updateRequest('${req.id}', 'approved')">Accept</button>
+                                <button class="btn-danger" style="padding:6px 10px; font-size:0.7rem; width:auto; margin:0; margin-left:5px;" onclick="updateRequest('${req.id}', 'rejected')">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('pending-requests-list').innerHTML = pendingListHTML;
+
+            let activeListHTML = '';
+            let approvedReqs = requests.filter(r => r.status === 'approved');
+            if (approvedReqs.length === 0) {
+                activeListHTML = '<p style="color:var(--text-muted); font-size:0.8rem;">No active nodes connected.</p>';
+            } else {
+                approvedReqs.forEach(req => {
+                    activeListHTML += `
+                        <div class="device-card">
+                            <div>
+                                <strong style="color:var(--text-main);">${req.name}</strong><br>
+                                <font>${req.device}</font>
+                            </div>
+                            <button class="log-out-btn btn-danger" onclick="killDevice('${req.id}')">Kill Switch</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('active-devices-list').innerHTML = activeListHTML;
+        }
+
+        function updateRequest(id, status) {
+            let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+            requests = requests.map(r => r.id === id ? { ...r, status: status } : r);
+            localStorage.setItem('s_one_requests', JSON.stringify(requests));
+            renderAdminPanel();
+        }
+
+        function killDevice(id) {
+            let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+            requests = requests.filter(r => r.id !== id);
+            localStorage.setItem('s_one_requests', JSON.stringify(requests));
+            renderAdminPanel();
+        }
+
+        function loadDashboard() {
+            checkUrlActions();
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('guest-waiting-container').classList.add('hidden');
+            document.getElementById('guest-dashboard').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+
+            const session = JSON.parse(localStorage.getItem('s_one_session'));
+            if (!session) {
+                document.getElementById('auth-container').classList.remove('hidden');
+                return;
+            }
+
+            if (session.role === 'admin') {
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                renderAdminPanel();
+            } else if (session.role === 'guest') {
+                let requests = JSON.parse(localStorage.getItem('s_one_requests') || '[]');
+                let myReq = requests.find(r => r.id === session.id);
+                if (myReq && myReq.status === 'approved') {
+                    document.getElementById('guest-dashboard').classList.remove('hidden');
+                } else {
+                    document.getElementById('guest-waiting-container').classList.remove('hidden');
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('s_one_session');
+            location.reload();
+        }
+
+        setInterval(checkRemoteStatus, 2000);
+        window.onload = loadDashboard;
     </script>
 </body>
-  </html>
-  
+            </html>
+            
