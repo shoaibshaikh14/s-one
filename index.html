@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S-ONE // Command Center</title>
-    <!-- EmailJS SDK -->
+    <title>S-ONE // Neural Command Interface</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
     <style>
         :root {
-            --bg-color: #02060d;
-            --panel-bg: #07101e;
-            --border-color: #00f0ff;
-            --text-main: #00f0ff;
-            --text-dim: #6b88a4;
-            --accent-green: #00ff66;
-            --accent-red: #ff3366;
+            --bg: #010409;
+            --box-bg: #0d1117;
+            --cyan: #00f0ff;
+            --dim: #8b949e;
+            --green: #2ea043;
+            --red: #da3633;
         }
 
         * {
@@ -25,41 +23,41 @@
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--cyan);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 20px;
         }
 
-        .container {
+        .terminal-box {
             width: 100%;
-            max-width: 440px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+            max-width: 450px;
+            background: var(--box-bg);
+            border: 1px solid var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
             padding: 25px;
-            border-radius: 6px;
+            border-radius: 4px;
         }
 
-        h2, h3 {
+        h2 {
             text-align: center;
             letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             text-transform: uppercase;
         }
 
-        .subtitle {
+        .sub-title {
             text-align: center;
             font-size: 11px;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            letter-spacing: 1.5px;
+            color: var(--dim);
+            margin-bottom: 25px;
+            letter-spacing: 1px;
         }
 
-        .form-group {
+        .field {
             margin-bottom: 15px;
         }
 
@@ -67,17 +65,16 @@
             display: block;
             font-size: 11px;
             margin-bottom: 5px;
-            color: var(--text-dim);
+            color: var(--dim);
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         input {
             width: 100%;
-            background: #02060d;
-            border: 1px solid var(--border-color);
+            background: #010409;
+            border: 1px solid var(--cyan);
             padding: 12px;
-            color: var(--text-main);
+            color: var(--cyan);
             font-size: 14px;
             border-radius: 2px;
             outline: none;
@@ -87,307 +84,274 @@
             box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
         }
 
-        button {
+        .btn {
             width: 100%;
             background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
             padding: 12px;
             font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            transition: all 0.3s ease;
+            letter-spacing: 1px;
             margin-top: 10px;
-            border-radius: 2px;
+            transition: 0.2s;
         }
 
-        button:hover:not(:disabled) {
-            background: var(--border-color);
-            color: var(--bg-color);
+        .btn:hover:not(:disabled) {
+            background: var(--cyan);
+            color: var(--bg);
         }
 
-        button:disabled {
-            border-color: var(--text-dim);
-            color: var(--text-dim);
+        .btn:disabled {
+            border-color: var(--dim);
+            color: var(--dim);
             cursor: not-allowed;
-            background: rgba(255,255,255,0.01);
         }
 
-        .tabs {
+        .tabs-nav {
             display: flex;
-            gap: 4px;
+            gap: 5px;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0, 240, 255, 0.3);
             padding-bottom: 10px;
-            overflow-x: auto;
         }
 
-        .tab-btn {
+        .tab-item {
             flex: 1;
-            padding: 6px 3px;
-            font-size: 9px;
+            padding: 8px 4px;
+            font-size: 10px;
             background: transparent;
-            border: 1px solid var(--text-dim);
-            color: var(--text-dim);
-            margin-top: 0;
-            white-space: nowrap;
+            border: 1px solid var(--dim);
+            color: var(--dim);
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
-        .tab-btn.active {
-            border-color: var(--border-color);
-            color: var(--text-main);
-            background: rgba(0, 240, 255, 0.12);
+        .tab-item.active {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.1);
         }
 
-        .view-section {
+        .pane {
             display: none;
         }
 
-        .view-section.active {
+        .pane.active {
             display: block;
         }
 
-        .status-box {
+        .info-card {
+            background: #010409;
+            border: 1px solid var(--cyan);
             padding: 12px;
-            border: 1px dashed var(--border-color);
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .status-display {
+            padding: 15px;
+            border: 1px dashed var(--cyan);
             text-align: center;
             font-size: 12px;
             margin-bottom: 15px;
-            background: rgba(0, 240, 255, 0.04);
-            letter-spacing: 1px;
+            background: rgba(0, 240, 255, 0.05);
         }
 
-        .locked-container {
-            position: relative;
+        .btn-green { border-color: var(--green); color: var(--green); }
+        .btn-green:hover { background: var(--green) !important; color: #fff !important; }
+
+        .btn-red { border-color: var(--red); color: var(--red); }
+        .btn-red:hover { background: var(--red) !important; color: #fff !important; }
+
+        .reset-link {
             text-align: center;
-            margin-top: 10px;
-        }
-
-        .lock-icon {
-            font-size: 26px;
-            margin-bottom: 5px;
-        }
-
-        .card-box {
-            background: #02060d;
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 2px;
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-accept {
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-        }
-        .btn-accept:hover {
-            background: var(--accent-green);
-            color: var(--bg-color);
-        }
-
-        .btn-reject {
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-        }
-        .btn-reject:hover {
-            background: var(--accent-red);
-            color: var(--bg-color);
-        }
-
-        .danger-btn {
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-        }
-        .danger-btn:hover {
-            background: var(--accent-red);
-            color: #fff;
+            margin-top: 15px;
+            font-size: 10px;
+            color: var(--dim);
+            cursor: pointer;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="app-container">
-        <!-- Dynamic Content -->
+    <div class="terminal-box" id="app-root">
+        <!-- Core content dynamically loads here -->
     </div>
 
     <script>
-        (function(){
-            emailjs.init("YOUR_PUBLIC_KEY"); 
-        })();
+        // EmailJS initialization
+        try { emailjs.init("YOUR_PUBLIC_KEY"); } catch(e) {}
 
-        function getDeviceInfo() {
+        // Device Detector
+        function getDevice() {
             const ua = navigator.userAgent;
-            let device = "Unknown Node";
-            if (/android/i.test(ua)) device = "Android Neural Node";
-            else if (/iphone|ipad|ipod/i.test(ua)) device = "iOS Neural Node";
-            else if (/win/i.test(ua)) device = "Windows Workstation";
-            else if (/mac/i.test(ua)) device = "Mac Terminal";
-            return `${device} (${navigator.platform})`;
+            if (/android/i.test(ua)) return "Android Neural Node";
+            if (/iphone|ipad|ipod/i.test(ua)) return "iOS Neural Node";
+            if (/win/i.test(ua)) return "Windows Workstation";
+            return "Generic Terminal";
         }
 
-        function renderAuth() {
-            const container = document.getElementById('app-container');
-            container.innerHTML = `
-                <h2>S-ONE // COMMAND</h2>
-                <div class="subtitle">Secure Gateway Access</div>
-                <div class="form-group">
+        // Boot Controller
+        window.onload = function() {
+            routeSession();
+        };
+
+        function routeSession() {
+            const role = localStorage.getItem('sone_role');
+            if (role === 'admin') {
+                loadAdminPanel('requests');
+            } else if (role === 'guest') {
+                loadGuestPortal('dashboard');
+            } else {
+                loadAuthScreen();
+            }
+        }
+
+        // 1. AUTH SCREEN
+        function loadAuthScreen() {
+            document.getElementById('app-root').innerHTML = `
+                <h2>S-ONE // CORE</h2>
+                <div class="sub-title">Secure Enterprise Gateway</div>
+                <div class="field">
                     <label>Operative / Admin ID</label>
-                    <input type="text" id="username" placeholder="Enter ID">
+                    <input type="text" id="usr" placeholder="Enter ID">
                 </div>
-                <div class="form-group">
+                <div class="field">
                     <label>Neural Passcode</label>
-                    <input type="password" id="password" placeholder="Enter Password">
+                    <input type="password" id="pwd" placeholder="Enter Password">
                 </div>
-                <button onclick="handleLogin()">Establish Link</button>
+                <button class="btn" onclick="verifyLogin()">Establish Link</button>
+                <div class="reset-link" onclick="systemHardReset()">[ Force System Reset ]</div>
             `;
         }
 
-        function handleLogin() {
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value.trim();
+        function verifyLogin() {
+            const u = document.getElementById('usr').value.trim();
+            const p = document.getElementById('pwd').value.trim();
 
-            if (!user || !pass) {
-                alert("ACCESS DENIED: Credentials required.");
+            if (!u || !p) {
+                alert("ERROR: Credentials mandatory.");
                 return;
             }
 
-            const currentAdminUser = localStorage.getItem('admin_username') || 'admin';
-            const currentAdminPass = localStorage.getItem('admin_password') || 'sone123';
+            const adminUser = localStorage.getItem('cfg_admin_usr') || 'admin';
+            const adminPass = localStorage.getItem('cfg_admin_pwd') || 'sone123';
+            const guestPass = localStorage.getItem('cfg_guest_pwd') || 'guest123';
 
-            if (user === currentAdminUser && pass === currentAdminPass) {
+            if (u === adminUser && p === adminPass) {
                 localStorage.setItem('sone_role', 'admin');
-                localStorage.setItem('sone_user', 'Admin Core');
-                renderAdminDashboard('requests');
+                loadAdminPanel('requests');
             } else {
-                const universalGuestPass = localStorage.getItem('universal_guest_password') || 'guest123';
-                if (pass !== universalGuestPass) {
-                    alert("ACCESS DENIED: Incorrect Passcode.");
+                if (p !== guestPass) {
+                    alert("ACCESS DENIED: Invalid Passcode.");
                     return;
                 }
-
                 localStorage.setItem('sone_role', 'guest');
-                localStorage.setItem('sone_user', user);
-
-                if (!localStorage.getItem(`session_start_${user}`)) {
-                    localStorage.setItem(`session_start_${user}`, Date.now());
+                localStorage.setItem('sone_user', u);
+                if (!localStorage.getItem(`status_${u}`)) {
+                    localStorage.setItem(`status_${u}`, 'idle');
                 }
-
-                if (!localStorage.getItem(`req_status_${user}`)) {
-                    localStorage.setItem(`req_status_${user}`, 'idle');
-                }
-                renderGuestPortal('dashboard');
+                loadGuestPortal('dashboard');
             }
         }
 
-        function renderGuestPortal(activeTab = 'dashboard') {
-            const username = localStorage.getItem('sone_user');
-            const status = localStorage.getItem(`req_status_${username}`) || 'idle';
-            const container = document.getElementById('app-container');
+        // 2. GUEST PORTAL
+        function loadGuestPortal(tab) {
+            const user = localStorage.getItem('sone_user') || 'Operative';
+            const status = localStorage.getItem(`status_${user}`) || 'idle';
 
-            let statusText = "Ready to transmit request.";
-            if (status === 'waiting') statusText = "STATUS: WAITING FOR ADMIN APPROVAL...";
-            else if (status === 'accepted') statusText = "STATUS: ACCESS GRANTED - DOWNLOAD UNLOCKED";
-            else if (status === 'rejected') statusText = "STATUS: ACCESS DENIED BY ADMIN";
+            let statusMsg = "System Ready. Transmit request for clearance.";
+            if (status === 'waiting') statusMsg = "STATUS: WAITING FOR ADMIN APPROVAL...";
+            else if (status === 'accepted') statusMsg = "STATUS: ACCESS GRANTED - DOWNLOAD UNLOCKED";
+            else if (status === 'rejected') statusMsg = "STATUS: ACCESS DENIED BY ADMIN";
 
-            container.innerHTML = `
+            document.getElementById('app-root').innerHTML = `
                 <h2>S-ONE TERMINAL</h2>
-                <div class="subtitle">Operative: ${username}</div>
-                
-                <div class="tabs">
-                    <button class="tab-btn ${activeTab === 'dashboard' ? 'active' : ''}" onclick="switchGuestTab('dashboard')">Dashboard</button>
-                    <button class="tab-btn ${activeTab === 'sone' ? 'active' : ''}" onclick="switchGuestTab('sone')">S-ONE Core</button>
+                <div class="sub-title">Operative: ${user}</div>
+
+                <div class="tabs-nav">
+                    <div class="tab-item ${tab === 'dashboard' ? 'active' : ''}" onclick="loadGuestPortal('dashboard')">Dashboard</div>
+                    <div class="tab-item ${tab === 'sone' ? 'active' : ''}" onclick="loadGuestPortal('sone')">S-ONE Core</div>
                 </div>
 
-                <div id="tab-dashboard" class="view-section ${activeTab === 'dashboard' ? 'active' : ''}">
-                    <div class="status-box">${statusText}</div>
-                    ${status === 'idle' ? `<button onclick="sendAccessRequest()">Request Send</button>` : ''}
-                    ${status === 'waiting' ? `<button disabled>Request Pending...</button>` : ''}
-                    <button class="danger-btn" onclick="logout()">Terminate Session</button>
+                <div class="pane ${tab === 'dashboard' ? 'active' : ''}">
+                    <div class="status-display">${statusMsg}</div>
+                    ${status === 'idle' ? `<button class="btn" onclick="sendRequest()">Request Send</button>` : ''}
+                    ${status === 'waiting' ? `<button class="btn" disabled>Request Pending...</button>` : ''}
+                    <button class="btn btn-red" style="margin-top:15px;" onclick="doLogout()">Terminate Session</button>
                 </div>
 
-                <div id="tab-sone" class="view-section ${activeTab === 'sone' ? 'active' : ''}">
-                    <div class="locked-container">
-                        ${status !== 'accepted' ? `
-                            <div class="lock-icon">🔒</div>
-                            <div style="font-size:11px; color:var(--text-dim); margin-bottom:12px; letter-spacing:1px;">SECURE PACKAGE LOCKED</div>
-                        ` : `
-                            <div class="lock-icon" style="color:var(--accent-green);">🔓</div>
-                            <div style="font-size:11px; color:var(--accent-green); margin-bottom:12px; letter-spacing:1px;">PACKAGE READY</div>
-                        `}
-                        <div class="status-box">${statusText}</div>
-                        <button ${status !== 'accepted' ? 'disabled' : ''} onclick="downloadPackage()">Download Secure Package</button>
+                <div class="pane ${tab === 'sone' ? 'active' : ''}">
+                    <div style="text-align:center; margin-bottom:15px;">
+                        ${status !== 'accepted' ? '<div style="font-size:24px;">🔒</div><div style="font-size:11px; color:var(--dim);">PACKAGE LOCKED</div>' : '<div style="font-size:24px; color:var(--green);">🔓</div><div style="font-size:11px; color:var(--green);">PACKAGE READY</div>'}
                     </div>
-                    <button class="danger-btn" style="margin-top:20px;" onclick="logout()">Terminate Session</button>
+                    <div class="status-display">${statusMsg}</div>
+                    <button class="btn" ${status !== 'accepted' ? 'disabled' : ''} onclick="downloadAction()">Download Secure Package</button>
+                    <button class="btn btn-red" style="margin-top:15px;" onclick="doLogout()">Terminate Session</button>
                 </div>
             `;
         }
 
-        function switchGuestTab(tabName) {
-            renderGuestPortal(tabName);
-        }
+        function sendRequest() {
+            const user = localStorage.getItem('sone_user');
+            const dev = getDevice();
 
-        function sendAccessRequest() {
-            const username = localStorage.getItem('sone_user');
-            const device = getDeviceInfo();
-            
-            localStorage.setItem(`req_status_${username}`, 'waiting');
-            localStorage.setItem(`device_${username}`, device);
+            localStorage.setItem(`status_${user}`, 'waiting');
+            localStorage.setItem(`dev_${user}`, dev);
 
-            let pending = JSON.parse(localStorage.getItem('sone_pending_requests') || '[]');
-            if(!pending.includes(username)) {
-                pending.push(username);
-                localStorage.setItem('sone_pending_requests', JSON.stringify(pending));
+            let pending = JSON.parse(localStorage.getItem('queue_pending') || '[]');
+            if (!pending.includes(user)) {
+                pending.push(user);
+                localStorage.setItem('queue_pending', JSON.stringify(pending));
             }
 
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-                user_name: username,
-                device_info: device,
-                message: `New secure request from Operative ${username} using ${device}.`
-            }).catch(err => console.log("Email sync active"));
+            try {
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                    user_name: user,
+                    device_info: dev,
+                    message: `Request from ${user} using ${dev}`
+                });
+            } catch(e) {}
 
-            alert("Request transmitted to Core.");
-            renderGuestPortal('dashboard');
+            alert("Request transmitted successfully.");
+            loadGuestPortal('dashboard');
         }
 
-        function downloadPackage() {
-            alert("Secure package downloaded successfully. Neural node active!");
-            let activeNodes = JSON.parse(localStorage.getItem('sone_active_nodes') || '[]');
-            const username = localStorage.getItem('sone_user');
-            if(!activeNodes.includes(username)) {
-                activeNodes.push(username);
-                localStorage.setItem('sone_active_nodes', JSON.stringify(activeNodes));
+        function downloadAction() {
+            alert("Download initiated. Neural node active!");
+            const user = localStorage.getItem('sone_user');
+            let nodes = JSON.parse(localStorage.getItem('active_nodes') || '[]');
+            if (!nodes.includes(user)) {
+                nodes.push(user);
+                localStorage.setItem('active_nodes', JSON.stringify(nodes));
             }
         }
 
-        function renderAdminDashboard(activeAdminTab = 'requests') {
-            const container = document.getElementById('app-container');
-            let pending = JSON.parse(localStorage.getItem('sone_pending_requests') || '[]');
-            let activeNodes = JSON.parse(localStorage.getItem('sone_active_nodes') || '[]');
-            
-            let currentGuestPass = localStorage.getItem('universal_guest_password') || 'guest123';
-            let currentAdminUser = localStorage.getItem('admin_username') || 'admin';
+        // 3. ADMIN PANEL
+        function loadAdminPanel(tab) {
+            const pending = JSON.parse(localStorage.getItem('queue_pending') || '[]');
+            const nodes = JSON.parse(localStorage.getItem('active_nodes') || '[]');
+            const curGuestPwd = localStorage.getItem('cfg_guest_pwd') || 'guest123';
+            const curAdminUsr = localStorage.getItem('cfg_admin_usr') || 'admin';
 
-            let requestsHtml = '';
+            let reqHtml = '';
             if (pending.length === 0) {
-                requestsHtml = '<div style="font-size:11px; color:var(--text-dim); text-align:center; margin-bottom:15px;">No pending security requests.</div>';
+                reqHtml = '<div style="font-size:11px; color:var(--dim); text-align:center;">No pending requests.</div>';
             } else {
-                pending.forEach(user => {
-                    let dev = localStorage.getItem(`device_${user}`) || 'Unknown Terminal';
-                    requestsHtml += `
-                        <div class="card-box">
-                            <div style="font-weight:bold; color:var(--text-main);">${user}</div>
-                            <div style="font-size:11px; color:var(--text-dim); margin-top:3px;">Device: ${dev}</div>
-                            <div class="admin-actions">
-                                <button class="btn-accept" onclick="adminAction('${user}', 'accepted')">Accept</button>
-                                <button class="btn-reject" onclick="adminAction('${user}', 'rejected')">Reject</button>
+                pending.forEach(u => {
+                    let d = localStorage.getItem(`dev_${u}`) || 'Unknown Device';
+                    reqHtml += `
+                        <div class="info-card">
+                            <div><b>Operative:</b> ${u}</div>
+                            <div style="font-size:10px; color:var(--dim); margin:4px 0;">Device: ${d}</div>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <button class="btn btn-green" style="margin:0; padding:6px;" onclick="handleDecision('${u}', 'accepted')">Accept</button>
+                                <button class="btn btn-red" style="margin:0; padding:6px;" onclick="handleDecision('${u}', 'rejected')">Reject</button>
                             </div>
                         </div>
                     `;
@@ -395,96 +359,103 @@
             }
 
             let nodesHtml = '';
-            if (activeNodes.length === 0) {
-                nodesHtml = '<div style="font-size:11px; color:var(--text-dim); text-align:center; margin-bottom:15px;">No active S-ONE nodes running.</div>';
+            if (nodes.length === 0) {
+                nodesHtml = '<div style="font-size:11px; color:var(--dim); text-align:center;">No active nodes running.</div>';
             } else {
-                activeNodes.forEach(user => {
-                    let dev = localStorage.getItem(`device_${user}`) || 'Unknown Device';
+                nodes.forEach(u => {
+                    let d = localStorage.getItem(`dev_${u}`) || 'Unknown Device';
                     nodesHtml += `
-                        <div class="card-box">
-                            <div style="font-weight:bold; color:var(--accent-green);">NODE: ${user}</div>
-                            <div style="font-size:11px; color:var(--text-dim); margin-top:3px;">Device: ${dev}</div>
-                            <button class="danger-btn" style="margin-top:8px; padding:6px;" onclick="killNode('${user}')">Kill Switch</button>
+                        <div class="info-card">
+                            <div style="color:var(--green);"><b>Node:</b> ${u}</div>
+                            <div style="font-size:10px; color:var(--dim); margin:4px 0;">Device: ${d}</div>
+                            <button class="btn btn-red" style="margin-top:6px; padding:6px;" onclick="killNodeAction('${u}')">Kill Switch</button>
                         </div>
                     `;
                 });
             }
 
-            let credsHtml = `
-                <div class="card-box">
-                    <div style="font-weight:bold; color:var(--text-main); margin-bottom:5px;">Universal Guest Password</div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <label style="font-size:10px;">Current: ${currentGuestPass}</label>
-                        <input type="text" id="new_guest_pass" placeholder="Enter new password for guests">
-                    </div>
-                    <button onclick="updateGuestPassword()">Update Guest Password</button>
-                </div>
-
-                <div class="card-box" style="margin-top:15px;">
-                    <div style="font-weight:bold; color:var(--text-main); margin-bottom:5px;">Admin Credentials Control</div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <label style="font-size:10px;">New Admin Username</label>
-                        <input type="text" id="new_admin_user" value="${currentAdminUser}">
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <label style="font-size:10px;">New Admin Password</label>
-                        <input type="text" id="new_admin_pass" placeholder="Enter new password">
-                    </div>
-                    <button onclick="updateAdminCredentials()">Update Admin Profile</button>
-                </div>
-            `;
-
-            let sessionStart = localStorage.getItem(`session_start_guest`) || Date.now();
-            let durationMins = Math.floor((Date.now() - sessionStart) / 60000);
-            let analyticsHtml = `
-                <div class="card-box">
-                    <div style="font-weight:bold; margin-bottom:5px;">Telemetry Analytics</div>
-                    <div style="font-size:11px; color:var(--text-dim);">Active Node Runtime: ~${durationMins} minutes</div>
-                    <div style="font-size:11px; color:var(--text-dim); margin-top:3px;">System Integrity: 99.8% Optimal</div>
-                </div>
-            `;
-
-            container.innerHTML = `
+            document.getElementById('app-root').innerHTML = `
                 <h2>Admin Command</h2>
-                <div class="subtitle">Central Neural Manager</div>
-                
-                <div class="tabs">
-                    <button class="tab-btn ${activeAdminTab === 'requests' ? 'active' : ''}" onclick="switchAdminTab('requests')">Requests</button>
-                    <button class="tab-btn ${activeAdminTab === 'nodes' ? 'active' : ''}" onclick="switchAdminTab('nodes')">Nodes</button>
-                    <button class="tab-btn ${activeAdminTab === 'credentials' ? 'active' : ''}" onclick="switchAdminTab('credentials')">Security</button>
-                    <button class="tab-btn ${activeAdminTab === 'analytics' ? 'active' : ''}" onclick="switchAdminTab('analytics')">Analytics</button>
+                <div class="sub-title">Central Neural Manager</div>
+
+                <div class="tabs-nav">
+                    <div class="tab-item ${tab === 'requests' ? 'active' : ''}" onclick="loadAdminPanel('requests')">Requests</div>
+                    <div class="tab-item ${tab === 'nodes' ? 'active' : ''}" onclick="loadAdminPanel('nodes')">Nodes</div>
+                    <div class="tab-item ${tab === 'security' ? 'active' : ''}" onclick="loadAdminPanel('security')">Security</div>
                 </div>
 
-                <div id="admin-tab-requests" class="view-section ${activeAdminTab === 'requests' ? 'active' : ''}">
-                    <h3 style="font-size:12px; text-align:left; color:var(--text-dim); margin-bottom:10px;">Access Clearances</h3>
-                    ${requestsHtml}
+                <div class="pane ${tab === 'requests' ? 'active' : ''}">
+                    <div style="font-size:11px; color:var(--dim); margin-bottom:10px; text-transform:uppercase;">Access Clearances</div>
+                    ${reqHtml}
                 </div>
 
-                <div id="admin-tab-nodes" class="view-section ${activeAdminTab === 'nodes' ? 'active' : ''}">
-                    <h3 style="font-size:12px; text-align:left; color:var(--text-dim); margin-bottom:10px;">Running Terminals</h3>
+                <div class="pane ${tab === 'nodes' ? 'active' : ''}">
+                    <div style="font-size:11px; color:var(--dim); margin-bottom:10px; text-transform:uppercase;">Running Terminals</div>
                     ${nodesHtml}
                 </div>
 
-                <div id="admin-tab-credentials" class="view-section ${activeAdminTab === 'credentials' ? 'active' : ''}">
-                    <h3 style="font-size:12px; text-align:left; color:var(--text-dim); margin-bottom:10px;">Credential Control</h3>
-                    ${credsHtml}
+                <div class="pane ${tab === 'security' ? 'active' : ''}">
+                    <div class="info-card">
+                        <div style="margin-bottom:5px;"><b>Universal Guest Password</b></div>
+                        <input type="text" id="set_g_pwd" placeholder="New guest password" value="${curGuestPwd}" style="margin-bottom:8px;">
+                        <button class="btn" style="margin:0; padding:8px;" onclick="saveGuestPwd()">Update Guest Password</button>
+                    </div>
+                    <div class="info-card" style="margin-top:15px;">
+                        <div style="margin-bottom:5px;"><b>Admin Credentials</b></div>
+                        <input type="text" id="set_a_usr" placeholder="New Admin ID" value="${curAdminUsr}" style="margin-bottom:8px;">
+                        <input type="text" id="set_a_pwd" placeholder="New Admin Password" style="margin-bottom:8px;">
+                        <button class="btn" style="margin:0; padding:8px;" onclick="saveAdminCreds()">Update Admin Profile</button>
+                    </div>
                 </div>
 
-                <div id="admin-tab-analytics" class="view-section ${activeAdminTab === 'analytics' ? 'active' : ''}">
-                    <h3 style="font-size:12px; text-align:left; color:var(--text-dim); margin-bottom:10px;">Usage Logs</h3>
-                    ${analyticsHtml}
-                </div>
-
-                <button class="danger-btn" style="margin-top:20px;" onclick="logout()">Disconnect Core</button>
+                <button class="btn btn-red" style="margin-top:20px;" onclick="doLogout()">Disconnect Core</button>
             `;
         }
 
-        function switchAdminTab(tabName) {
-            renderAdminDashboard(tabName);
+        function handleDecision(user, decision) {
+            localStorage.setItem(`status_${user}`, decision);
+            let pending = JSON.parse(localStorage.getItem('queue_pending') || '[]');
+            pending = pending.filter(x => x !== user);
+            localStorage.setItem('queue_pending', JSON.stringify(pending));
+            loadAdminPanel('requests');
         }
 
-        function adminAction(username, decision) {
-            localStorage.setItem(`req_status_${username}`, decision);
-            let pending = JSON.parse(localStorage.getItem('sone_pending_requests') || '[]');
-            pending = pending.filter(u => u !== username);
-      
+        function killNodeAction(user) {
+            localStorage.setItem(`status_${user}`, 'rejected');
+            let nodes = JSON.parse(localStorage.getItem('active_nodes') || '[]');
+            nodes = nodes.filter(x => x !== user);
+            localStorage.setItem('active_nodes', JSON.stringify(nodes));
+            loadAdminPanel('nodes');
+        }
+
+        function saveGuestPwd() {
+            const val = document.getElementById('set_g_pwd').value.trim();
+            if (!val) { alert("Field cannot be empty"); return; }
+            localStorage.setItem('cfg_guest_pwd', val);
+            alert("Guest password updated successfully.");
+        }
+
+        function saveAdminCreds() {
+            const usr = document.getElementById('set_a_usr').value.trim();
+            const pwd = document.getElementById('set_a_pwd').value.trim();
+            if (!usr) { alert("Admin ID cannot be empty"); return; }
+            localStorage.setItem('cfg_admin_usr', usr);
+            if (pwd) localStorage.setItem('cfg_admin_pwd', pwd);
+            alert("Admin profile updated successfully.");
+        }
+
+        function doLogout() {
+            localStorage.removeItem('sone_role');
+            localStorage.removeItem('sone_user');
+            loadAuthScreen();
+        }
+
+        function systemHardReset() {
+            if (confirm("Reset local system data?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
