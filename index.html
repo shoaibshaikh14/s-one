@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S-ONE // Ultron Command Center</title>
+    <title>S-ONE // Command Center</title>
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script>
     <style>
         :root {
             --bg-color: #02060d;
-            --panel-bg: rgba(5, 12, 24, 0.95);
+            --panel-bg: #07101e;
             --border-color: #00f0ff;
             --text-main: #00f0ff;
             --text-dim: #6b88a4;
             --accent-green: #00ff66;
             --accent-red: #ff3366;
-            --accent-yellow: #ffcc00;
         }
 
         * {
@@ -33,28 +32,6 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Fixed Background Core Animation */
-        .ultron-core-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            border: 2px dashed rgba(0, 240, 255, 0.1);
-            border-radius: 50%;
-            animation: rotateCore 25s linear infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes rotateCore {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         .container {
@@ -62,11 +39,9 @@
             max-width: 440px;
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
             padding: 25px;
             border-radius: 6px;
-            position: relative;
-            z-index: 10;
         }
 
         h2, h3 {
@@ -74,7 +49,6 @@
             letter-spacing: 2px;
             margin-bottom: 15px;
             text-transform: uppercase;
-            text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
         }
 
         .subtitle {
@@ -100,7 +74,7 @@
 
         input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: #02060d;
             border: 1px solid var(--border-color);
             padding: 12px;
             color: var(--text-main);
@@ -110,7 +84,7 @@
         }
 
         input:focus {
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
         }
 
         button {
@@ -132,7 +106,6 @@
         button:hover:not(:disabled) {
             background: var(--border-color);
             color: var(--bg-color);
-            box-shadow: 0 0 15px var(--border-color);
         }
 
         button:disabled {
@@ -166,7 +139,6 @@
             border-color: var(--border-color);
             color: var(--text-main);
             background: rgba(0, 240, 255, 0.12);
-            box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
         }
 
         .view-section {
@@ -199,7 +171,7 @@
         }
 
         .card-box {
-            background: rgba(0,0,0,0.6);
+            background: #02060d;
             border: 1px solid var(--border-color);
             padding: 12px;
             margin-bottom: 12px;
@@ -242,8 +214,6 @@
 </head>
 <body>
 
-    <div class="ultron-core-bg"></div>
-
     <div class="container" id="app-container">
         <!-- Dynamic Content -->
     </div>
@@ -266,7 +236,7 @@
         function renderAuth() {
             const container = document.getElementById('app-container');
             container.innerHTML = `
-                <h2>S-ONE // ULTRON</h2>
+                <h2>S-ONE // COMMAND</h2>
                 <div class="subtitle">Secure Gateway Access</div>
                 <div class="form-group">
                     <label>Operative / Admin ID</label>
@@ -383,7 +353,7 @@
                 message: `New secure request from Operative ${username} using ${device}.`
             }).catch(err => console.log("Email sync active"));
 
-            alert("Request transmitted to Ultron Core.");
+            alert("Request transmitted to Core.");
             renderGuestPortal('dashboard');
         }
 
@@ -475,7 +445,7 @@
             `;
 
             container.innerHTML = `
-                <h2>Ultron Command</h2>
+                <h2>Admin Command</h2>
                 <div class="subtitle">Central Neural Manager</div>
                 
                 <div class="tabs">
@@ -495,4 +465,26 @@
                     ${nodesHtml}
                 </div>
 
-                <div id="admin-tab-credentials" class="view-section ${activeAdmi
+                <div id="admin-tab-credentials" class="view-section ${activeAdminTab === 'credentials' ? 'active' : ''}">
+                    <h3 style="font-size:12px; text-align:left; color:var(--text-dim); margin-bottom:10px;">Credential Control</h3>
+                    ${credsHtml}
+                </div>
+
+                <div id="admin-tab-analytics" class="view-section ${activeAdminTab === 'analytics' ? 'active' : ''}">
+                    <h3 style="font-size:12px; text-align:left; color:var(--text-dim); margin-bottom:10px;">Usage Logs</h3>
+                    ${analyticsHtml}
+                </div>
+
+                <button class="danger-btn" style="margin-top:20px;" onclick="logout()">Disconnect Core</button>
+            `;
+        }
+
+        function switchAdminTab(tabName) {
+            renderAdminDashboard(tabName);
+        }
+
+        function adminAction(username, decision) {
+            localStorage.setItem(`req_status_${username}`, decision);
+            let pending = JSON.parse(localStorage.getItem('sone_pending_requests') || '[]');
+            pending = pending.filter(u => u !== username);
+      
