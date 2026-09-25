@@ -184,14 +184,10 @@
     </div>
 
     <script>
-        // Initialize EmailJS with your real Public Key
         try { 
-            emailjs.init("a6TAFnxtb-tQybqOo"); //[span_0](start_span)[span_0](end_span)
-        } catch(e) {
-            console.log("EmailJS init failed");
-        }
+            emailjs.init("a6TAFnxtb-tQybqOo");
+        } catch(e) {}
 
-        // Device Detector
         function getDevice() {
             const ua = navigator.userAgent;
             if (/android/i.test(ua)) return "Android Neural Node";
@@ -200,7 +196,6 @@
             return "Generic Terminal";
         }
 
-        // Boot Controller
         window.onload = function() {
             routeSession();
         };
@@ -216,7 +211,6 @@
             }
         }
 
-        // 1. AUTH SCREEN
         function loadAuthScreen() {
             document.getElementById('app-root').innerHTML = `
                 <h2>S-ONE // CORE</h2>
@@ -265,27 +259,20 @@
             }
         }
 
-        // Forgot Password via Gmail Logic
         function triggerForgotPassword() {
             const adminUser = localStorage.getItem('cfg_admin_usr') || 'admin';
             const adminPass = localStorage.getItem('cfg_admin_pwd') || 'sone123';
-            const targetEmail = "shoaibshaikh14062008@gmail.com"; //[span_1](start_span)[span_1](end_span)
-
-            if(confirm(`Send recovery credentials to registered admin email (${targetEmail})?`)) {
-                emailjs.send("shoaib1406", "template_mrkffeo", { //[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
-                    name: "Admin Recovery", //[span_4](start_span)[span_4](end_span)
-                    email: targetEmail, //[span_5](start_span)[span_5](end_span)
-                    title: "S-ONE Password Recovery", //[span_6](start_span)[span_6](end_span)
-                    message: `SECURITY ALERT: Your Admin Username is '${adminUser}' and current Neural Passcode is '${adminPass}'.` //[span_7](start_span)[span_7](end_span)
-                }).then(function(response) {
-                    alert("Recovery instructions dispatched to your Gmail inbox!");
-                }, function(error) {
-                    alert("Failed to send email. Check connection.");
+            alert(`RECOVERY SYSTEM:\nAdmin ID: ${adminUser}\nAdmin Password: ${adminPass}`);
+            try {
+                emailjs.send("shoaib1406", "template_mrkffeo", {
+                    name: "Admin Recovery",
+                    email: "shoaibshaikh14062008@gmail.com",
+                    title: "S-ONE Password Recovery",
+                    message: `SECURITY ALERT: Admin Username is '${adminUser}' and current Neural Passcode is '${adminPass}'.`
                 });
-            }
+            } catch(e) {}
         }
 
-        // 2. GUEST PORTAL
         function loadGuestPortal(tab) {
             const user = localStorage.getItem('sone_user') || 'Operative';
             const status = localStorage.getItem(`status_${user}`) || 'idle';
@@ -329,37 +316,58 @@
             localStorage.setItem(`status_${user}`, 'waiting');
             localStorage.setItem(`dev_${user}`, dev);
 
-            let pending = JSON.parse(localStorage.getItem('queue_pending') || '[]');
+            // Force add to pending queue
+            let pending = [];
+            try {
+                pending = JSON.parse(localStorage.getItem('queue_pending')) || [];
+            } catch(e) {
+                pending = [];
+            }
+
             if (!pending.includes(user)) {
                 pending.push(user);
                 localStorage.setItem('queue_pending', JSON.stringify(pending));
             }
 
-            emailjs.send("shoaib1406", "template_mrkffeo", { //[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
-                name: user, //[span_10](start_span)[span_10](end_span)
-                email: "shoaibshaikh14062008@gmail.com", //[span_11](start_span)[span_11](end_span)
-                title: "New S-ONE Access Request", //[span_12](start_span)[span_12](end_span)
-                message: `Operative ID: ${user} | Device: ${dev}` //[span_13](start_span)[span_13](end_span)
-            });
+            try {
+                emailjs.send("shoaib1406", "template_mrkffeo", {
+                    name: user,
+                    email: "shoaibshaikh14062008@gmail.com",
+                    title: "New S-ONE Access Request",
+                    message: `Operative ID: ${user} | Device: ${dev}`
+                });
+            } catch(e) {}
 
-            alert("Request transmitted to Ultron Core & Email dispatched.");
+            alert("Request transmitted successfully.");
             loadGuestPortal('dashboard');
         }
 
         function downloadAction() {
             alert("Download initiated. Neural node active!");
             const user = localStorage.getItem('sone_user');
-            let nodes = JSON.parse(localStorage.getItem('active_nodes') || '[]');
+            let nodes = [];
+            try {
+                nodes = JSON.parse(localStorage.getItem('active_nodes')) || [];
+            } catch(e) {
+                nodes = [];
+            }
             if (!nodes.includes(user)) {
                 nodes.push(user);
                 localStorage.setItem('active_nodes', JSON.stringify(nodes));
             }
         }
 
-        // 3. ADMIN PANEL
         function loadAdminPanel(tab) {
-            const pending = JSON.parse(localStorage.getItem('queue_pending') || '[]');
-            const nodes = JSON.parse(localStorage.getItem('active_nodes') || '[]');
+            let pending = [];
+            let nodes = [];
+            try {
+                pending = JSON.parse(localStorage.getItem('queue_pending')) || [];
+                nodes = JSON.parse(localStorage.getItem('active_nodes')) || [];
+            } catch(e) {
+                pending = [];
+                nodes = [];
+            }
+
             const curGuestPwd = localStorage.getItem('cfg_guest_pwd') || 'guest123';
             const curAdminUsr = localStorage.getItem('cfg_admin_usr') || 'admin';
 
@@ -438,7 +446,10 @@
 
         function handleDecision(user, decision) {
             localStorage.setItem(`status_${user}`, decision);
-            let pending = JSON.parse(localStorage.getItem('queue_pending') || '[]');
+            let pending = [];
+            try {
+                pending = JSON.parse(localStorage.getItem('queue_pending')) || [];
+            } catch(e) {}
             pending = pending.filter(x => x !== user);
             localStorage.setItem('queue_pending', JSON.stringify(pending));
             loadAdminPanel('requests');
@@ -446,7 +457,10 @@
 
         function killNodeAction(user) {
             localStorage.setItem(`status_${user}`, 'rejected');
-            let nodes = JSON.parse(localStorage.getItem('active_nodes') || '[]');
+            let nodes = [];
+            try {
+                nodes = JSON.parse(localStorage.getItem('active_nodes')) || [];
+            } catch(e) {}
             nodes = nodes.filter(x => x !== user);
             localStorage.setItem('active_nodes', JSON.stringify(nodes));
             loadAdminPanel('nodes');
@@ -481,5 +495,5 @@
             }
         }
     </script>
-    </body>
-    </html>
+</body>
+</html>
